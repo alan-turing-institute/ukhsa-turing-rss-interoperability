@@ -21,7 +21,7 @@ data_dir_to_use <- ifelse(load_data_from_archive, "data_from_archive", "data")
 out_dir_to_use <- ifelse(load_data_from_archive, file.path(data_dir_to_use, "output", control_par_id),
                          file.path("output", control_par_id))
 
-output_to_overleaf <- TRUE
+output_to_overleaf <- F#TRUE
 switching_index <- ifelse(output_to_overleaf, 2, 1)
 plot_dir_curr <- c("plots", "C:/Users/nicho/Dropbox/Apps/Overleaf/Interoperability of models/figures")[switching_index]
 dir_text_numbers <- c(file.path("output", "numbers_for_text"),
