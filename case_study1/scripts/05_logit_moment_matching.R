@@ -19,4 +19,4 @@ for (this_ltla in ltla_names) {
 
 logit_moment_df <- do.call(bind_rows, logit_moments)
 
-readr::write_csv(logit_moment_df, file.path(output_dir, "/logit_moments.csv"))
+readr::write_csv(logit_moment_df, file.path(out_dir, "/logit_moments.csv"))

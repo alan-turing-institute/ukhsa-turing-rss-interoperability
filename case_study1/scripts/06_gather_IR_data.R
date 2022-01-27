@@ -1,5 +1,4 @@
 library(dplyr)
-library(rgdal)
 library(dplyr)
 library(ggplot2)
 library(patchwork)
@@ -26,7 +25,7 @@ react_date_df <- readr::read_csv("data/react_dates.csv")
 react_ltla_df <- readr::read_csv("data/react_ltla.csv")
 raw_pillar2_df <- readr::read_csv("data/raw_pillar2.csv")
 
-delta_df <- readr::read_csv(file.path(out_dir, id, "delta.csv"))
+delta_df <- readr::read_csv(file.path(out_dir, "delta_pcr_perfect.csv"))
 ltla_prevalence <- readRDS(file.path(out_dir, "ltla_prevalence_pcr_perfect.RDS"))
 ltla_pop <- ltla_df %>%
   distinct(ltla, M)
@@ -49,8 +48,6 @@ date_recent <- max(mid_week_unique)
 out_files <- list.files(file.path(out_dir, id, "SIR"), full.names = TRUE)
 SIR_model_results <- lapply(out_files, readRDS)
 names(SIR_model_results) <- sub(".RDS", "", basename(out_files))
-
-# save(SIR_model_results, file = "C:/Temp/SIR_output_for_tor.RData")
 
 IR <- data.frame()
 Rl <- Il <- list()
@@ -92,18 +89,4 @@ rownames(I_all) <- I_all$ltla
 
 str(IR)
 readr::write_csv(IR, path = file.path(output_dir, "IR_for_interop.csv"))
-?readr::write_csv
 
-# 
-# #################################
-# ### Debiased prevalence plots ###
-# #################################
-# source("scripts/06a_plot_pillar2vreact.R")
-# source("scripts/06b_plot_delta.R")
-# source("scripts/06c_plot_ltla_prevalence.R")
-# 
-# ########################
-# ### SIR output plots ###
-# ########################
-# source("scripts/06d_plot_prevalence_R_scatter_and_curves.R")
-# source("scripts/06e_plot_prev_R_maps.R")
