@@ -48,7 +48,7 @@ combined
 
 # Exceedance probabilities (lambda > threshold) --------------------------
 
-exceedance_plot <- function(inla_res, theshold, plot_df, title){
+exceedance_plot <- function(inla_res, threshold, plot_df, title){
   
   # Retrieve marginals from R-INLA output
   marginals <- inla_res$marginals.random$LTLA_ID
