@@ -1,10 +1,6 @@
 dir.create("data", showWarnings = FALSE)
 
 # Make sure to install prevdebiasr first
-# (GN: I did this by creating local prevdebiasr.tar.gz and using install.packages())
-# install.packages(pkgs = "/mnt/c/Users/nicho/Documents/bauer_sync/projects/covid/covid_github/prevdebiasr.tar.gz", repos = NULL)
-# better approach from Brieuc:
-# library(devtools)
 # devtools::install_github("alan-turing-institute/prevdebiasr")
 # OR
 # renv::install("alan-turing-institute/prevdebiasr")
@@ -118,14 +114,6 @@ path_to_shapefile <- "data/Local_Authority_Districts_(May_2020)_Boundaries_UK_BF
 download.file(url_to_shapefile , temp)
 unzip(temp, exdir = path_to_shapefile)
 unlink(temp)
-
-
-### Download Imperial College Rt estimates ###
-
-url_to_imperial <- "https://imperialcollegelondon.github.io/covid19local/downloads/UK_hotspot_Rt_estimates.csv"
-path_to_imperial <- "data/UK_hotspot_Rt_estimates_Imperial.csv"
-download.file(url_to_imperial, path_to_imperial)
-
 
 ### Download Epimap Rt estimates ###
 

@@ -299,9 +299,7 @@ path_to_combined_epimap <- "data/Rt_estimates_Epimap_combined.csv"
 r_in <- read.csv(file = path_to_combined_epimap, stringsAsFactors = F)  
 r_in$name_date <- paste0(r_in$area, "_", r_in$Date)
 mid_week_unique <- sort(unique(as.character(week_df$mid_week)))
-path_to_imperial <- "data/UK_hotspot_Rt_estimates_Imperial.csv"
-r_to_dup <- read.csv(file = path_to_imperial, stringsAsFactors = F)  
-str(r_to_dup)
+
 r_out <- r_in[r_in$Date %in% mid_week_unique, c("area", "Date")]
 colnames(r_out) <- c("area", "date")
 r_out[, c("CIlow", "Rt", "CIup")] <- r_in[match(paste0(r_out$area, "_", r_out$date), r_in$name_date), c("Rt_2_5", "Rt_50", "Rt_97_5")]
