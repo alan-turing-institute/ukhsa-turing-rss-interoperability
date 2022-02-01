@@ -1,20 +1,11 @@
 library(dplyr)
-library(dplyr)
-library(ggplot2)
-library(patchwork)
 library(tidyr)
-
-options(bitmapType = "cairo-png")
 
 source("scripts/plot_utils.R")
 source("scripts/SIR_utils.R")
 
-id <- "PCR_positive_perfect"
-control_par_id <- "AR0.99sd1Rsd0.2"
-# out_dir <- file.path("output", control_par_id)
-# plot_dir <- file.path(out_dir, id, "plots")
 plot_dir <- "plots"
-output_dir <- "output"
+out_dir <- "output"
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 
 ##########################
@@ -25,8 +16,8 @@ react_date_df <- readr::read_csv("data/react_dates.csv")
 react_ltla_df <- readr::read_csv("data/react_ltla.csv")
 raw_pillar2_df <- readr::read_csv("data/raw_pillar2.csv")
 
-delta_df <- readr::read_csv(file.path(out_dir, "delta_pcr_perfect.csv"))
-ltla_prevalence <- readRDS(file.path(out_dir, "ltla_prevalence_pcr_perfect.RDS"))
+delta_df <- readr::read_csv(file.path(out_dir, "delta.csv"))
+ltla_prevalence <- readRDS(file.path(out_dir, "ltla_prevalence.RDS"))
 ltla_pop <- ltla_df %>%
   distinct(ltla, M)
 
@@ -45,7 +36,7 @@ n_weeks <- length(mid_week_unique)
 all_mid_week_cut <- mid_week_unique
 date_recent <- max(mid_week_unique)
 
-out_files <- list.files(file.path(out_dir, id, "SIR"), full.names = TRUE)
+out_files <- list.files(file.path(out_dir, "SIR"), full.names = TRUE)
 SIR_model_results <- lapply(out_files, readRDS)
 names(SIR_model_results) <- sub(".RDS", "", basename(out_files))
 
@@ -74,7 +65,7 @@ for (ltla_curr in ltla_unique) {
   add_all <- cbind(I_add, R_add)
   add_all$namdat <- rownames(add_all)
   add_all$ltla <- ltla_curr
-  #add_all$mid_week <- sapply(strsplit(add_all$namdat, "_"), function(x) x[2])
+
   add_all$mid_week <- mid_week_unique
   IR <- rbind(IR, add_all)
 }
@@ -88,5 +79,4 @@ rownames(R_all) <- R_all$ltla
 rownames(I_all) <- I_all$ltla
 
 str(IR)
-readr::write_csv(IR, path = file.path(output_dir, "IR_for_interop.csv"))
-
+readr::write_csv(IR, file.path(output_dir, "IR_for_interop.csv"))

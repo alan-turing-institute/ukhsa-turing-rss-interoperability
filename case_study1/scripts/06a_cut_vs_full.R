@@ -37,11 +37,8 @@ run_type <- c("fast", "full")[1]
 clust <- makeCluster(n_cores)
 doParallel::registerDoParallel(clust)
 
-out_dir <- paste0(
-  "output/AR", control_debias$delta_AR_rho,
-  "sd", control_debias$delta_AR_sd,
-  "Rsd", control_SIR$R_AR_sd
-)
+out_dir <- "output"
+plot_dir <- "plots"
 control <- c(control_debias, control_SIR)
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 saveRDS(control, file.path(out_dir, "control.RDS"), version = 2)
@@ -55,10 +52,10 @@ region_curr <- c("London", "South West", "South East", "North West")[1]
 mid_week_use <- "2021-01-17"
 test_df_full <- region_df[region_df$phe_region == region_curr, ]
 data_in <- c("single_week", "whole_round")[1]
-if(data_in == "single_week") {
+if (data_in == "single_week") {
   test_df <- test_df_full[test_df_full$mid_week == mid_week_use, ]
 }
-if(data_in == "whole_round") {
+if (data_in == "whole_round") {
   react_round_8_weeks <- mid_week_unique[mid_week_unique > "2021-01-06" & mid_week_unique < "2021-01-21"]
   test_df_curr_round <- test_df[test_df$mid_week %in% react_round_8_weeks, ]
   test_df_round_aggregated <- test_df_curr_round[1, c("phe_region", "mid_week", "Nt", "nt", "Nr", "nr", "M")]
@@ -506,18 +503,6 @@ for(numc in save_num)
               col.names = F, row.names = F, quote = F)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 #####################################################
 # Plot it!
 grey_pallette <- grey(seq(0, 1, length.out = 1000))
@@ -639,8 +624,6 @@ for (plot_type in c("full_misspecified", "cut", "full_improved")) {
 dev.off()
 
 
-
-
 x <- "paste('Misspecified model,' nu = hat(nu))"
 
 a <- expression(paste("Misspecified model,", nu = hat(nu)))
@@ -648,32 +631,5 @@ str(a)
 
 plot(0, main = call(a))
 
-
-
 plot(0, main = expression(paste("Misspecified model,", nu == hat(nu)[MLE])))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -1,5 +1,3 @@
-#####################################################
-# Run 06_wrapper_generate_plots first!!
 
 
 IR$ltla_week <- paste0(IR$ltla, "_", IR$mid_week)

@@ -9,7 +9,7 @@ options(bitmapType = "cairo-png", device = "X11")
 ## Local Authority Districts (same as LTLA, checked) to Regions lookup:
 LTLA2Reg <- read_csv("data/Local_Authority_District_to_Region__December_2020__Lookup_in_England.csv")
 
-out_files <- list.files("output/AR0.99sd1Rsd0.2/PCR_positive_Perfect/SIR", full.names=TRUE)
+out_files <- list.files("output/SIR", full.names=TRUE)
 SIR_model_results <- lapply(out_files, readRDS)
 ltla_df <- readr::read_csv("data/ltla.csv")
 ltla_unique <- unique(ltla_df$ltla)
@@ -260,7 +260,7 @@ p1 <- ltla_I_plots[[1]]  + ltla_R_plots[[1]] + var_plots[[1]] + scatt_plots[[1]]
         legend.text = element_text(size = 6),
         legend.title = element_text(size=9)) # plot.margin =margin(-1,-1,-1,, "cm"))
 
-plot_dir <- file.path("plots", "AR0.99sd1Rsd0.2", "Infectious")
+plot_dir <- "plots"
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 ggsave(file.path(plot_dir, "epimap_maps.png"), 
        width = 8, height = 12, units = "in")
