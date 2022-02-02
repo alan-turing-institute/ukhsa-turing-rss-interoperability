@@ -74,10 +74,10 @@ LTLA_shp_Reg$LTLA_ID <- 1:nrow(LTLA_shp_Reg)
 
 # Determine neighborhood/adjacency information needed for neighborhood-based CAR model
 W.nb <- spdep::poly2nb(LTLA_shp_Reg)
-nb2INLA("data/W.adj", W.nb)
+nb2INLA("W.adj", W.nb)
 
 st_crs(LTLA_shp_Reg) <- crs
-save(LTLA_shp_Reg, file="data/space_obj.RData")
+save(LTLA_shp_Reg, file="space_obj.RData")
 
 # Prevalence --------------------------------------------------------------
 
