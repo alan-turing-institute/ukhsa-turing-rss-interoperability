@@ -1,7 +1,9 @@
 
+library(INLA)
 library(ggplot2)
 library(patchwork)
 library(xtable)
+library(Cairo)
 
 # Load outputs of the two models
 load('prev_res.RData')
@@ -43,9 +45,9 @@ latent_field_plot <- function(inla_res, spatial_df, title){
 pp1 <- latent_field_plot(prev_res, LTLA_shp_Reg, 'Naive Model')
 pp2 <- latent_field_plot(prev_res_adj, LTLA_shp_Reg, 'Heteroscedastic Model')
 combined <- pp1 + pp2 + plot_layout(guides = "collect") & scale_fill_viridis_c()
-combined <- combined + plot_annotation(title = 'Latent Spatial Field \U1D709')
+combined <- combined + plot_annotation(title = expression('Latent Spatial Field '~lambda))
 
-ggsave("latent_spatial_field.png")
+ggsave("latent_spatial_field.png", type="cairo-png")
 
 # Exceedance probabilities (lambda > threshold) --------------------------
 
@@ -75,8 +77,9 @@ exceedance_plot <- function(inla_res, threshold, plot_df, title){
 pp1 <- exceedance_plot(prev_res, 0, LTLA_shp_Reg, 'Naive Model')
 pp2 <- exceedance_plot(prev_res_adj, 0, LTLA_shp_Reg, 'Heteroscedastic Model')
 combined <- pp1 + pp2 + plot_layout(guides = "collect") & scale_fill_brewer(drop=FALSE)
-combined <- combined + plot_annotation(title = 'Exceedance probabilities P(\U1D709 >0)')
+combined <- combined + plot_annotation(title = expression('Exceedance probabilities P('~lambda~' > 0)'))
 
-ggsave("exceedance.png")
+ggsave("exceedance.png", type='cairo-png')
+
 
 
