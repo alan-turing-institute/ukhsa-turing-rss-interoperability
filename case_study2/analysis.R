@@ -27,7 +27,7 @@ prev_sd <- prev_sd[order(prev_sd$date_LTLA_ID), ]
 
 formula <- mean ~ 1  + IMD_stand + bame_stand + 
   f(date_ID, model = "rw2") +
-  f(LTLA_ID, model = "bym2", graph = "data/W.adj", scale.model = TRUE, constr =
+  f(LTLA_ID, model = "bym2", graph = "W.adj", scale.model = TRUE, constr =
       TRUE, hyper = list(theta1 = list("PCprior", c(1,   0.01)), 
                          theta2 = list("PCprior", c(0.5, 0.5))))
 
@@ -47,7 +47,7 @@ hyper_prior <- list(prec = list(prior = "gamma", initial = 1, fixed = TRUE))
 
 formula_adj <- mean ~ 1  + IMD_stand + bame_stand + 
   f(date_ID, model = "rw2") +
-  f(LTLA_ID, model = "bym2", graph = "data/W.adj", scale.model = TRUE, constr =
+  f(LTLA_ID, model = "bym2", graph = "W.adj", scale.model = TRUE, constr =
       TRUE, hyper = list(theta1 = list("PCprior", c(1,   0.01)), theta2 =
                            list("PCprior", c(0.5, 0.5)))) +
   f(date_LTLA_ID, model = "generic0", 

@@ -8,7 +8,7 @@ load('prev_res.RData')
 load('prev_res_adj.RData')
 
 # Load LTLA_shp_Reg (contains geography)
-load('data/space_obj.Rdata')
+load('space_obj.Rdata')
 
 # =========================================================================
 # Get parameter estimates (Table 1)
@@ -44,7 +44,8 @@ pp1 <- latent_field_plot(prev_res, LTLA_shp_Reg, 'Naive Model')
 pp2 <- latent_field_plot(prev_res_adj, LTLA_shp_Reg, 'Heteroscedastic Model')
 combined <- pp1 + pp2 + plot_layout(guides = "collect") & scale_fill_viridis_c()
 combined <- combined + plot_annotation(title = 'Latent Spatial Field \U1D709')
-combined
+
+ggsave("latent_spatial_field.png")
 
 # Exceedance probabilities (lambda > threshold) --------------------------
 
@@ -75,6 +76,7 @@ pp1 <- exceedance_plot(prev_res, 0, LTLA_shp_Reg, 'Naive Model')
 pp2 <- exceedance_plot(prev_res_adj, 0, LTLA_shp_Reg, 'Heteroscedastic Model')
 combined <- pp1 + pp2 + plot_layout(guides = "collect") & scale_fill_brewer(drop=FALSE)
 combined <- combined + plot_annotation(title = 'Exceedance probabilities P(\U1D709 >0)')
-combined
+
+ggsave("exceedance.png")
 
 

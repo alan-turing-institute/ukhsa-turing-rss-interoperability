@@ -24,10 +24,10 @@ merge_Hackney_CoL <- TRUE
 # 1. Space data -----------------------------------------------------------
 
 ## Local Authority Districts (same as LTLA, checked) to Regions lookup:
-LTLA2Reg <- read_csv("data/geography/Local_Authority_District_to_Region_(April_2021)_Lookup_in_England.csv")
+LTLA2Reg <- read_csv("../ukhsa-turing-rss-interoperability-data/geography/Local_Authority_District_to_Region_(April_2021)_Lookup_in_England.csv")
 
 # import LTLA shapefile
-LTLA_shp = readOGR("data/geography/Local_Authority_Districts_(May_2021)_UK_BFE_V3/Local_Authority_Districts_(May_2021)_UK_BFE_V3.shp")
+LTLA_shp = readOGR("../ukhsa-turing-rss-interoperability-data/geography/Local_Authority_Districts_(May_2021)_UK_BFE_V3/Local_Authority_Districts_(May_2021)_UK_BFE_V3.shp")
 LTLA_shp <- st_as_sf(LTLA_shp)
 
 # remove LTLAs for which we don't have testing data (i.e. all that are not in England)
@@ -74,16 +74,16 @@ LTLA_shp_Reg$LTLA_ID <- 1:nrow(LTLA_shp_Reg)
 
 # Determine neighborhood/adjacency information needed for neighborhood-based CAR model
 W.nb <- spdep::poly2nb(LTLA_shp_Reg)
-nb2INLA("data/W.adj", W.nb)
+nb2INLA("W.adj", W.nb)
 
 st_crs(LTLA_shp_Reg) <- crs
-save(LTLA_shp_Reg, file="data/space_obj.RData")
+save(LTLA_shp_Reg, file="space_obj.RData")
 
 # Prevalence --------------------------------------------------------------
 
 year_week <- function(x,base) isoweek(x) - isoweek(base) + 53*(year(x) - year(base))
 
-raw_prev_moments <- read_csv("data/logit_moments.csv", col_types = cols(mid_week = col_date(format = "%Y-%m-%d")))
+raw_prev_moments <- read_csv("../ukhsa-turing-rss-interoperability-data/prevalence/logit_moments.csv", col_types = cols(mid_week = col_date(format = "%Y-%m-%d")))
 
 # Get index for each week/year
 raw_prev_moments$week <- year_week(raw_prev_moments$mid_week, start_date)
@@ -112,7 +112,7 @@ prev_data <- prev_data %>%  # left_join(prev_data, n_pop_mat) %>%
 
 # BAME proportion ---------------------------------------------------------
 
-bame_raw <- read_csv("data/census2011_ethnicity_LSOA_black_southasian.csv", skip = 7)
+bame_raw <- read_csv("../ukhsa-turing-rss-interoperability-data/covariates/census2011_ethnicity_LSOA_black_southasian.csv", skip = 7)
 
 #LSOA2LTLA <-  read_csv("data/geography/PCD_OA_LSOA_MSOA_LAD_AUG21_UK_LU.csv", 
 #                       col_types = cols(pcd7 = col_skip(), pcd8 = col_skip(), 
@@ -122,7 +122,7 @@ bame_raw <- read_csv("data/census2011_ethnicity_LSOA_black_southasian.csv", skip
 #LSOA2LTLA <- distinct(LSOA2LTLA)
 #write.csv(LSOA2LTLA, 'data/geography/LSOA2LTLA.csv')
 
-LSOA2LTLA <- read_csv("data/geography/LSOA2LTLA.csv")
+LSOA2LTLA <- read_csv("../ukhsa-turing-rss-interoperability-data/geography/LSOA_to_LTLA.csv")
 
 bame_raw <- bame_raw %>% 
   rename(LSOA11CD = `2011 super output area - lower layer`) %>% 
@@ -152,7 +152,7 @@ prev_data = left_join(prev_data, bame_prop)
 
 # https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019
 
-IMD_LTLA_2019 <- read_excel("data/File_10_-_IoD2019_Local_Authority_District_Summaries__lower-tier__.xlsx", 
+IMD_LTLA_2019 <- read_excel("../ukhsa-turing-rss-interoperability-data/covariates/File_10_-_IoD2019_Local_Authority_District_Summaries__lower-tier__.xlsx", 
                             sheet = "IMD", n_max = 318) %>% rename(lad21cd = `Local Authority District code (2019)`) %>%
                               mutate(lad21cd = if_else(lad21cd %in%c("E07000004", "E07000005", "E07000006", "E07000007"),
                                                                                      "E06000060", lad21cd)) %>%
