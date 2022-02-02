@@ -10,3 +10,5 @@ Clone this repo:
 ```{bash}
 git clone https://github.com/alan-turing-institute/ukhsa-turing-rss-interoperability.git
 ```
+
+Get data [here](https://github.com/alan-turing-institute/ukhsa-turing-rss-interoperability-data)
