@@ -28,7 +28,7 @@ control_debias <- prevdebiasr::get_control_parameters(
 
 mid_week_unique <- sort(unique(ltla_df$mid_week))
 
-n_cores <- 2
+n_cores <- 20
 clust <- makeCluster(n_cores)
 doParallel::registerDoParallel(clust)
 
