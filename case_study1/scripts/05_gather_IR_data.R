@@ -79,4 +79,4 @@ rownames(R_all) <- R_all$ltla
 rownames(I_all) <- I_all$ltla
 
 str(IR)
-readr::write_csv(IR, file.path(output_dir, "IR_for_interop.csv"))
+readr::write_csv(IR, file.path(out_dir, "IR_for_interop.csv"))
