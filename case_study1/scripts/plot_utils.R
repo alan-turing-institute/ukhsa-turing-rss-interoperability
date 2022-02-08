@@ -99,25 +99,25 @@ add_react_sampling_intervals_to_plot <- function(d, col_data, prev_max, type = c
 get_ltla_shape_file <- function(merge_Hackney_CoL = TRUE) {
   
   ## Local Authority Districts (same as LTLA, checked) to Regions lookup:
-  LTLA2Reg <- readr::read_csv("data/Local_Authority_District_to_Region__December_2020__Lookup_in_England.csv")
+  LTLA2Reg <- readr::read_csv("../ukhsa-turing-rss-interoperability-data/geography/Local_Authority_District_to_Region_(April_2021)_Lookup_in_England.csv")
   
   # import LTLA shapefile
-  LTLA_shp = rgdal::readOGR("data/Local_Authority_Districts_(May_2020)_Boundaries_UK_BFE-shp")
+  LTLA_shp = rgdal::readOGR("../ukhsa-turing-rss-interoperability-data/geography/Local_Authority_Districts_(May_2021)_UK_BFE_V3/")
   LTLA_shp <- sf::st_as_sf(LTLA_shp)
   
   # remove LTLAs for which we don't have testing data (i.e. all that are not in England)
   LTLA_shp_EN = LTLA_shp %>% 
-    dplyr::filter(lad20cd %in% LTLA2Reg$LAD20CD)
+    dplyr::filter(LAD21CD %in% LTLA2Reg$LAD21CD)
   
   # remove island
   islands = c("Isle of Wight",   "Isles of Scilly")
-  LTLA_shp_EN = LTLA_shp_EN[!LTLA_shp_EN$lad20nm %in% islands,]
+  LTLA_shp_EN = LTLA_shp_EN[!LTLA_shp_EN$LAD21NM %in% islands,]
 
   if (merge_Hackney_CoL) {
     
     # assign to City of London the code of Hackney and use it as
     # grouping variable
-    LTLA_shp_EN$lad20cd[LTLA_shp_EN$lad20nm == "City of London"] <- "E09000012"
+    LTLA_shp_EN$LAD21CD[LTLA_shp_EN$LAD21NM == "City of London"] <- "E09000012"
     
     st_union_by = function(geo, group) {
       
@@ -133,17 +133,17 @@ get_ltla_shape_file <- function(merge_Hackney_CoL = TRUE) {
       
       y3 <- sf::st_sfc(y2)
       #
-      sf::st_sf(data.frame(lad20cd = names(y3), geom = sf::st_sfc(y3)))
+      sf::st_sf(data.frame(LAD21CD = names(y3), geom = sf::st_sfc(y3)))
     }
     
-    LTLA_shp_EN <- st_union_by(LTLA_shp_EN$geometry, LTLA_shp_EN$lad20cd)
+    LTLA_shp_EN <- st_union_by(LTLA_shp_EN$geometry, LTLA_shp_EN$LAD21CD)
   }
   
   # add region lookup to LTLA shapefile
-  LTLA_shp_Reg  <- dplyr::left_join(LTLA_shp_EN, LTLA2Reg, by = c("lad20cd" = "LAD20CD"))
+  LTLA_shp_Reg  <- dplyr::left_join(LTLA_shp_EN, LTLA2Reg, by = "LAD21CD")
   
   # reorder shapefile so that all LTLA belonging to the same region have neighboring indexes (this simplify indexing when summing stuff over region in the nimble code)
-  LTLA_shp_Reg <- LTLA_shp_Reg[order(LTLA_shp_Reg$RGN20CD),]
+  LTLA_shp_Reg <- LTLA_shp_Reg[order(LTLA_shp_Reg$RGN21CD),]
   
   return(LTLA_shp_Reg)
 }

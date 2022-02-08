@@ -35,7 +35,7 @@ reg_df_curr <- region_df[region_df$phe_region == "South West", ]
 reg_df_curr[nrow(reg_df_curr) - 10:0, ]
 mid_week_unique <- sort(unique(ltla_df$mid_week))
 
-n_cores <- 12
+n_cores <- 10
 run_type <- c("fast", "full")[1]
 clust <- makeCluster(n_cores)
 doParallel::registerDoParallel(clust)
@@ -152,7 +152,7 @@ while (!converged) {
 nu_fixed_pt_estimate <- nu_curr
 
 
-redo_figures <- FALSE
+redo_figures <- TRUE
 ltla_df_use <- ltla_df[ltla_df$mid_week == mid_week_use & ltla_df$phe_region == region_curr, ]
 
 for (nu in c(nu_fixed_pt_estimate, nu_approx)) {
