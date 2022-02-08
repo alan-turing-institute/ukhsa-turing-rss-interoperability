@@ -16,7 +16,7 @@ First we clone the [`Epimap.jl`](https://github.com/epimap/Epimap.jl) repo using
 git clone https://github.com/epimap/Epimap.jl
 ```
 
-In particular we want the `#paper` branch, which for example can be achieve by executing the following commands:
+In particular we want the `#paper` branch, which for example can be achieve by executing the following command:
 
 ``` shell
 git --git-dir=Epimap.jl/.git checkout paper
@@ -123,7 +123,15 @@ julia --project=Epimap.jl Epimap.jl/scripts/mapviz.jl \
       debiased=data/Rt-debiased.csv
 ```
 
-### TODO Figure 9: Rt comparison between selected LTLAs
+### Figure 9: Rt comparison between selected LTLAs
+
+First we create a unified dataframe from the Rt quantities inferred for the different models:
+
+``` shell
+julia --project=Epimap.jl Epimap.jlscripts/combine-with-case-study.jl --out=path/to/store/result path/to/debiased-Rt path/to/epimap-Rt path/to/epimap-debiased-Rt
+```
+
+Then we can run the script in `case_study1/06c_epimap_comparison_plots.R` on the resulting dataframe.
 
 ### Figure 10: Internal vs. External "infection pressure"
 
