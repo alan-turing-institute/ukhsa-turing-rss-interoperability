@@ -88,7 +88,7 @@ julia> include(scriptsdir("run_rmap.jl"))
 ```julia
 julia> using DrWatson
 
-julia> include(scriptsdir("run_rmap_debiased.jl"))
+julia> include(scriptsdir("run_debiased.jl"))
 ```
 
 ## Post-processing
