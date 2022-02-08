@@ -4,9 +4,24 @@ library(tidyr)
 source("scripts/plot_utils.R")
 source("scripts/SIR_utils.R")
 
-plot_dir <- "plots"
+
 out_dir <- "output"
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+
+if (Sys.info()["user"] == "nicho") {
+  plot_dir <- "C:/Users/nicho/Dropbox/Apps/Overleaf/Interoperability of models/figures"
+  dir_text_numbers_epimap <- "C:/Users/nicho/Dropbox/Apps/Overleaf/Interoperability of models/text_numbers/epimap_case_study"
+  dir_text_numbers_case_study1 <- "C:/Users/nicho/Dropbox/Apps/Overleaf/Interoperability of models/text_numbers/cut_vs_full_comp"
+} else {
+  plot_dir <- "plots"
+  dir_text_numbers_epimap <- paste0(out_dir, "/text_numbers/epimap_case_study")
+  dir_text_numbers_case_study1 <- paste0(out_dir, "/text_numbers/cut_vs_full_comp")
+}
+
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
+dir.create(dir_text_numbers_epimap, showWarnings = FALSE, recursive = TRUE)
+dir.create(dir_text_numbers_case_study1, showWarnings = FALSE, recursive = TRUE)
+
 
 ##########################
 ### Load data & output ###
