@@ -130,7 +130,7 @@ TODO: Need to convert `data/Rt-debiased.csv` to have columns `Rt_2_5`, `Rt_50` a
 First we create a unified dataframe from the Rt quantities inferred for the different models:
 
 ``` shell
-julia --project=Epimap.jl Epimap.jlscripts/combine-with-case-study.jl --out=path/to/store/result path/to/debiased-Rt path/to/epimap-Rt path/to/epimap-debiased-Rt
+julia --project=Epimap.jl Epimap.jl/scripts/combine-with-case-study.jl --out=path/to/store/result path/to/debiased-Rt path/to/epimap-Rt path/to/epimap-debiased-Rt
 ```
 
 Then we can run the script in `case_study1/06c_epimap_comparison_plots.R` on the resulting dataframe.
