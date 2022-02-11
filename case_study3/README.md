@@ -133,7 +133,9 @@ First we create a unified dataframe from the Rt quantities inferred for the diff
 julia --project=Epimap.jl Epimap.jl/scripts/combine-with-case-study.jl --out=path/to/store/result path/to/debiased-Rt path/to/epimap-Rt path/to/epimap-debiased-Rt
 ```
 
-Then we can run the script in `case_study1/06c_epimap_comparison_plots.R` on the resulting dataframe.
+Then we can run the script in `case_study1/06c_epimap_comparison_plots.R** on the resulting dataframe.
+
+*Note: an example of such combined output can be found at `outputs/Rt-combined.csv`.
 
 ### Figure 10: Internal vs. External "infection pressure"
 
