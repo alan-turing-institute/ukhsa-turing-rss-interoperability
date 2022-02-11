@@ -135,7 +135,7 @@ julia --project=Epimap.jl Epimap.jl/scripts/combine-with-case-study.jl --out=pat
 
 Then we can run the script in `case_study1/06c_epimap_comparison_plots.R** on the resulting dataframe.
 
-*Note: an example of such combined output can be found at `outputs/Rt-combined.csv`.
+*Note: an example of such combined output can be found at `outputs/Rt-combined.csv`.*
 
 ### Figure 10: Internal vs. External "infection pressure"
 
