@@ -6,16 +6,29 @@ source("scripts/SIR_utils.R")
 ltla_df <- readr::read_csv("data/ltla.csv")
 
 # This file needs to be in Zenodo and/ or created from case studies 1 and 3 outputs
-IR_comb <- read.csv("https://www.dropbox.com/s/j0gtd2nue8sqfy1/Rt-combined-v2.csv?dl=1", stringsAsFactors = F)
+IR_comb_orig <- read.csv("https://www.dropbox.com/s/j0gtd2nue8sqfy1/Rt-combined-v2.csv?dl=1", stringsAsFactors = F)
+
+IR_weekly <- read.csv("../case_study3/outputs/Rt-combined.csv", stringsAsFactors = F)
+all_days <- seq(min(as.Date(IR_weekly$mid_week)) - 3, max(as.Date(IR_weekly$mid_week)) + 3, by = 1)
+IR_comb <- expand.grid(ltla = unique(IR_comb$ltla), Date = all_days)
+temp_out <- outer(IR_comb$Date, as.Date(mid_week_unique), '-')
+IR_comb$mid_week <- mid_week_unique[apply(temp_out, 1, function(x) which.min(abs(x)))]
+IR_comb <- IR_comb %>%
+  left_join(IR_weekly, by = c("ltla", "mid_week"))
+IR_comb$Date <- as.character(IR_comb$Date)
+
+
 
 IR_comb$ltla_mid_week <- paste0(IR_comb$ltla, "_", IR_comb$mid_week)
 mid_week_unique <- sort(unique(IR_comb$mid_week))
 ltla_mid_week_unique <- sort(unique(IR_comb$ltla_mid_week)) 
 epimap_min_date <- as.character(min(IR_comb$Date))#mid_week)
 epimap_max_date <- as.character(max(IR_comb$Date))#mid_week)
-str(IR_comb)
-min(IR_comb$mid_week)
-head(IR_comb)
+# epimap_min_date <- as.character(min(IR_comb$mid_week))#mid_week)
+# epimap_max_date <- as.character(max(IR_comb$mid_week))#mid_week)
+# str(IR_comb)
+# min(IR_comb$mid_week)
+# head(IR_comb)
 
 mid_week_unique <- unique(as.character(ltla_df$mid_week))
 week_ind <- which(mid_week_unique >= epimap_min_date)
