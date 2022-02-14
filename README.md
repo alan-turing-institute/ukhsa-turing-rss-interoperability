@@ -1,6 +1,6 @@
-# Interoperability  of  statisticalmodels  in  pandemic preparedness:  principles  and reality
+# Interoperability of statistical models in pandemic preparedness: principles and reality
 
-This repository contains code for case studies described in [Interoperability  of  statisticalmodels  in  pandemic preparedness:  principles  and reality](https://arxiv.org/pdf/2109.13730.pdf)
+This repository contains code for case studies described in [Interoperability of statistical models in pandemic preparedness: principles and reality](https://arxiv.org/pdf/2109.13730.pdf)
 
 ## Getting started
 
