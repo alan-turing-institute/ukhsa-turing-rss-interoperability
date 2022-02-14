@@ -352,7 +352,7 @@ for (nu in c(nu_fixed_pt_estimate, nu_approx)) {
     par(mar = c(3, 3, 5, 5), oma = c(1, 1, 1, 1), mfrow = c(2, 2))
     cexax <- 1
     # plot_bd <- -20
-    c("full_misspecified", "cut", "full_fixed")
+    # c("full_misspecified", "cut", "full_fixed")
     for(plot_type in c("full", "cut")) {
       if(plot_type == "full") {
         zpl <- joint_2d_log_posterior
