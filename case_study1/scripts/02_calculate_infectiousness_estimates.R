@@ -12,7 +12,7 @@ region_df <- readr::read_csv("data/region.csv")
 # This means we have 301 columns (the time index) and 4000 posterior samples (rows) for each
 #=========================================================================
 
-pcr_df <- readr::read_csv("data/samples_pcr.csv")
+pcr_df <- readr::read_csv("../ukhsa-turing-rss-interoperability-data/miscellaneous/samples_pcr.csv")
 pcr_samples <- pcr_df[,2:302]
 
 #=========================================================================
