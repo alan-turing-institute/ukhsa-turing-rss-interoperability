@@ -416,32 +416,33 @@ for (nu in c(nu_fixed_pt_estimate, nu_approx)) {
       mtext(side = 3, line = 3.5, text = mtext_curr, cex = 1.2)
       mtext(side = 3, line = 1, at = 0, text = switch (plot_type, full = "(a)", cut = "(b)"), cex = 1)
     }
-    bias_store <- list()
-    for (plot_type in c("full", "cut")) {
-      comp_2 <- data.frame(ltla = ltla_df_use$ltla, 
-                           l = unlist(ltla_df_use[, paste0(plot_type, "_prevprop_post_lower")]) * 100,
-                           m = unlist(ltla_df_use[, paste0(plot_type, "_prevprop_post_mn")]) * 100, 
-                           u = unlist(ltla_df_use[, paste0(plot_type, "_prevprop_post_upper")]) * 100)
-      bias_store[[paste0(plot_type, "_mean")]] <- bias_mean <- mean(comp_2$m - comp_1$m)
-      bias_store[[paste0(plot_type, "_se")]] <- bias_se <- sd(comp_2$m - comp_1$m) / sqrt(nrow(comp_1))
-      do_plots_in_loop <- FALSE
-      if (do_plots_in_loop) {
-        plot(comp_1$m, comp_2$m, xlim = c(0, 5), ylim = c(0, 5), ty = "n", xlab = "", ylab = "", las = 1, xaxs = "i", yaxs = "i")
-        mtext(side = 1, line = 2.5, text = "% Prevalence (REACT)", cex = cexax)
-        mtext(side = 2, line = 2.5, text = "% Prevalence (debiased Pillar 1+2)", cex = cexax)
-        # mtext(side = 3, line = 0.25, text = paste0("Bias = ", formatC(x = bias_mean, format = "f", digits = 2),
-        #                                            "% (SE = ", formatC(x = bias_se, format = "f", digits = 2), "%)"), cex = cexax)
-        abline(0, 1)
-        for (k in 1:nrow(comp_1)) {
-          lines(x = rep(comp_1$m[k], 2), y = unlist(comp_2[k, c("l", "u")]))
-          lines(x = unlist(comp_1[k, c("l", "u")]), y = rep(comp_2$m[k], 2), col = "grey")
-        }
-        points(comp_1$m, comp_2$m, pch = 19, cex = .7)
-        mtext(side = 3, line = 1, at = 0, text = switch (plot_type, full = "(c)", cut = "(d)"), cex = 1)
-      }
-    }
     dev.off()
   }
+  bias_store <- list()
+  for (plot_type in c("full", "cut")) {
+    comp_2 <- data.frame(ltla = ltla_df_use$ltla, 
+                         l = unlist(ltla_df_use[, paste0(plot_type, "_prevprop_post_lower")]) * 100,
+                         m = unlist(ltla_df_use[, paste0(plot_type, "_prevprop_post_mn")]) * 100, 
+                         u = unlist(ltla_df_use[, paste0(plot_type, "_prevprop_post_upper")]) * 100)
+    bias_store[[paste0(plot_type, "_mean")]] <- bias_mean <- mean(comp_2$m - comp_1$m)
+    bias_store[[paste0(plot_type, "_se")]] <- bias_se <- sd(comp_2$m - comp_1$m) / sqrt(nrow(comp_1))
+    do_plots_in_loop <- FALSE
+    if (do_plots_in_loop) {
+      plot(comp_1$m, comp_2$m, xlim = c(0, 5), ylim = c(0, 5), ty = "n", xlab = "", ylab = "", las = 1, xaxs = "i", yaxs = "i")
+      mtext(side = 1, line = 2.5, text = "% Prevalence (REACT)", cex = cexax)
+      mtext(side = 2, line = 2.5, text = "% Prevalence (debiased Pillar 1+2)", cex = cexax)
+      # mtext(side = 3, line = 0.25, text = paste0("Bias = ", formatC(x = bias_mean, format = "f", digits = 2),
+      #                                            "% (SE = ", formatC(x = bias_se, format = "f", digits = 2), "%)"), cex = cexax)
+      abline(0, 1)
+      for (k in 1:nrow(comp_1)) {
+        lines(x = rep(comp_1$m[k], 2), y = unlist(comp_2[k, c("l", "u")]))
+        lines(x = unlist(comp_1[k, c("l", "u")]), y = rep(comp_2$m[k], 2), col = "grey")
+      }
+      points(comp_1$m, comp_2$m, pch = 19, cex = .7)
+      mtext(side = 3, line = 1, at = 0, text = switch (plot_type, full = "(c)", cut = "(d)"), cex = 1)
+    }
+  }
+  
 }  
   
 
