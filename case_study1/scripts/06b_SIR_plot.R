@@ -35,8 +35,6 @@ col_reg <- rainbow(length(ltla_curve), alpha = .75)
 names(col_reg) <- ltla_curve
 # plot_dir <- "C:/Users/nicho/Dropbox/Apps/Overleaf/Interoperability of models/figures"
 jpeg(paste0(plot_dir, "/SIR_interoperability.jpeg"), 9, 6, res = 750, units = "in")
-
-
 par(mfcol = c(2, length(ltla_curve)), mar = c(0.5, 0.5, 0.5, 0.5), oma = c(6, 5, 6, 5))
 for (ltla_curr in ltla_curve) {
   for (what_pl in c("I", "R")[1:2]) {
@@ -55,9 +53,6 @@ for (ltla_curr in ltla_curve) {
                                   I = "% Prevalence",
                                   R = "Effective R"), line = 3)
     }
-    # d <- ltla_df %>% 
-    #   filter(ltla == ltla_curr)
-    xpl_week <- plot_map[match(d$mid_week, plot_map$date), "day_index"]
     if(what_pl == "I") {
       matc <- IR[IR$ltla == ltla_curr, c("I_l", "I_m", "I_u")]
       matc_x <- IR[IR$ltla == ltla_curr, c("Ix_l", "Ix_m", "Ix_u")]
@@ -65,7 +60,8 @@ for (ltla_curr in ltla_curve) {
     if(what_pl == "R") {
       matc <- IR[IR$ltla == ltla_curr, c("R_l", "R_m", "R_u")]
     }
-    # colc <- gray(.5, alpha = .5)#"grey"#col_reg[ltla_curr]
+    
+    xpl_week <- plot_map[match(mid_week_unique, plot_map$date), "day_index"]
     colc <- rgb(0, 0, 1, alpha = .5)#"grey"#col_reg[ltla_curr]
     if(what_pl == "I") {
       points(xpl_week, matc_x[, 2], pch = 19, col = 1)
@@ -76,15 +72,9 @@ for (ltla_curr in ltla_curve) {
     lines(xpl_week, matc[, 2], lty = 1, lwd = 2, col = colc)
     lines(xpl_week, matc[, 3], lty = 1, lwd = 1, col = colc)
     lines(xpl_week, matc[, 1], lty = 1, lwd = 1, col = colc)
-    # abline(v = match(date_recent, plot_map$date))
-    # axis(side = 3, at = match(date_recent, plot_map$date), labels = date_recent)
-    # mtext(side = 3, text = switch(what_pl, I = "Prevalence (%)", R = "Effective R value"), line = .5)
-    # annotate_months(plot_map, add_axis = (ltla_curr == ltla_curve[length(ltla_curve)]), shade_alpha = .2, for_presentation = T)
     annotate_months(plot_map, add_axis = (what_pl == "R"), shade_alpha = .2, for_presentation = T)
     if(what_pl == "I")
       mtext(side = 3, text = ltla_curr, cex = 1, line = 1)
-    # if(what_pl == "I")
-    #   legend(x = "topleft", legend = ltla_curr)
   }
 }
 dev.off()

@@ -9,7 +9,7 @@ library(foreach)
 library(truncnorm)
 source("scripts/SIR_utils.R")
 
-trans_mats <- readRDS("transmats/poisson_SIR_epi_gamma_1.RDS")
+trans_mats <- readRDS("../ukhsa-turing-rss-interoperability-data/transmats/poisson_SIR_epi_gamma_1.RDS")
 vax_df <- readr::read_csv("data/vaccination.csv")
 pcr_infectious_df <- readr::read_csv("data/moment_match_infectious.csv")
 region_df <- readr::read_csv("data/region.csv") %>%
@@ -28,7 +28,7 @@ control_debias <- prevdebiasr::get_control_parameters(
 
 mid_week_unique <- sort(unique(ltla_df$mid_week))
 
-n_cores <- 20
+n_cores <- 10
 clust <- makeCluster(n_cores)
 doParallel::registerDoParallel(clust)
 

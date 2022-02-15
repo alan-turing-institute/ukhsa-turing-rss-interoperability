@@ -7,6 +7,9 @@ library(foreach)
 library(truncnorm)
 source("scripts/SIR_utils.R")
 
+# plot_dir <- "C:/Users/nicho/Dropbox/Apps/Overleaf/Interoperability of models/figures"
+
+
 # trans_mats <- readRDS("transmats/poisson_SIR_epi_gamma_1.RDS")
 vax_df <- readr::read_csv("data/vaccination.csv")
 pcr_infectious_df <- readr::read_csv("data/moment_match_infectious.csv")
@@ -32,15 +35,12 @@ reg_df_curr <- region_df[region_df$phe_region == "South West", ]
 reg_df_curr[nrow(reg_df_curr) - 10:0, ]
 mid_week_unique <- sort(unique(ltla_df$mid_week))
 
-n_cores <- 12
+n_cores <- 10
 run_type <- c("fast", "full")[1]
 clust <- makeCluster(n_cores)
 doParallel::registerDoParallel(clust)
 
-out_dir <- "output"
-plot_dir <- "plots"
 control <- c(control_debias, control_SIR)
-dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 saveRDS(control, file.path(out_dir, "control.RDS"), version = 2)
 
 clusterExport(clust, c("control_debias", "control_SIR"))
@@ -64,17 +64,6 @@ if (data_in == "whole_round") {
   test_df_round_aggregated$round <- "8"
   test_df <- test_df_round_aggregated
 }
-
-
-par(mfrow = c(2, 1))
-regc <- "Barking and Dagenham"
-ltla_df_curr <- as.data.frame(ltla_df[ltla_df$ltla == regc, ])
-matplot(1:nrow(ltla_df_curr), cbind(ltla_df_curr$Nt, ltla_df_curr$nt), xaxt = "n", xlab = "")
-axis(side = 1, at = 1:nrow(ltla_df_curr), labels = ltla_df_curr$mid_week, las = 2, cex.axis = .7, xlab = "")
-matplot(1:nrow(ltla_df_curr), ltla_df_curr$nt / ltla_df_curr$Nt, xaxt = "n", xlab = "")
-axis(side = 1, at = 1:nrow(ltla_df_curr), labels = ltla_df_curr$mid_week, las = 2, cex.axis = .7, xlab = "")
-
-
 
 j <- 1
 M_curr <- test_df$M[j]
@@ -163,7 +152,7 @@ while (!converged) {
 nu_fixed_pt_estimate <- nu_curr
 
 
-redo_figures <- FALSE
+redo_figures <- TRUE
 ltla_df_use <- ltla_df[ltla_df$mid_week == mid_week_use & ltla_df$phe_region == region_curr, ]
 
 for (nu in c(nu_fixed_pt_estimate, nu_approx)) {
@@ -192,7 +181,7 @@ for (nu in c(nu_fixed_pt_estimate, nu_approx)) {
   delta_bin_width <- diff(del_seq[1:2])
   delta_full_marg_post_norm <- delta_marg_post_eval_unnorm / sum(delta_marg_post_eval_unnorm)# / delta_bin_width
   
-  plot(del_seq, delta_full_marg_post_norm, ty = "l")
+  # plot(del_seq, delta_full_marg_post_norm, ty = "l")
   
   #####################################################
   # Evaluate the bivariate posteriors, joint and cut
@@ -254,13 +243,6 @@ for (nu in c(nu_fixed_pt_estimate, nu_approx)) {
   I_marg_post_eval_unnorm <- sapply(I_log_post_eval_list, function(x) sum(exp(x$log_post - I_max_log_post)))
   pi_bin_width <- diff(pi_seq_coarse[1:2])
   pi_full_marg_post_norm <- I_marg_post_eval_unnorm / sum(I_marg_post_eval_unnorm)# / pi_bin_width
-  
-  nu
-  
-  str(I_log_post_eval_list)
-  
-  plot(pi_seq_coarse, pi_full_marg_post_norm, ty = "l")
-  
   
   I_quant <- prevdebiasr:::randomised_testing_prevalence(test_df, control, imperfect)
   delta_regional <- prevdebiasr:::delta_regional_posterior(test_df, I_quant, control, imperfect)
@@ -370,7 +352,7 @@ for (nu in c(nu_fixed_pt_estimate, nu_approx)) {
     par(mar = c(3, 3, 5, 5), oma = c(1, 1, 1, 1), mfrow = c(2, 2))
     cexax <- 1
     # plot_bd <- -20
-    c("full_misspecified", "cut", "full_fixed")
+    # c("full_misspecified", "cut", "full_fixed")
     for(plot_type in c("full", "cut")) {
       if(plot_type == "full") {
         zpl <- joint_2d_log_posterior
@@ -434,17 +416,21 @@ for (nu in c(nu_fixed_pt_estimate, nu_approx)) {
       mtext(side = 3, line = 3.5, text = mtext_curr, cex = 1.2)
       mtext(side = 3, line = 1, at = 0, text = switch (plot_type, full = "(a)", cut = "(b)"), cex = 1)
     }
-    bias_store <- list()
-    for (plot_type in c("full", "cut")) {
-      comp_2 <- data.frame(ltla = ltla_df_use$ltla, 
-                           l = unlist(ltla_df_use[, paste0(plot_type, "_prevprop_post_lower")]) * 100,
-                           m = unlist(ltla_df_use[, paste0(plot_type, "_prevprop_post_mn")]) * 100, 
-                           u = unlist(ltla_df_use[, paste0(plot_type, "_prevprop_post_upper")]) * 100)
+    dev.off()
+  }
+  bias_store <- list()
+  for (plot_type in c("full", "cut")) {
+    comp_2 <- data.frame(ltla = ltla_df_use$ltla, 
+                         l = unlist(ltla_df_use[, paste0(plot_type, "_prevprop_post_lower")]) * 100,
+                         m = unlist(ltla_df_use[, paste0(plot_type, "_prevprop_post_mn")]) * 100, 
+                         u = unlist(ltla_df_use[, paste0(plot_type, "_prevprop_post_upper")]) * 100)
+    bias_store[[paste0(plot_type, "_mean")]] <- bias_mean <- mean(comp_2$m - comp_1$m)
+    bias_store[[paste0(plot_type, "_se")]] <- bias_se <- sd(comp_2$m - comp_1$m) / sqrt(nrow(comp_1))
+    do_plots_in_loop <- FALSE
+    if (do_plots_in_loop) {
       plot(comp_1$m, comp_2$m, xlim = c(0, 5), ylim = c(0, 5), ty = "n", xlab = "", ylab = "", las = 1, xaxs = "i", yaxs = "i")
       mtext(side = 1, line = 2.5, text = "% Prevalence (REACT)", cex = cexax)
       mtext(side = 2, line = 2.5, text = "% Prevalence (debiased Pillar 1+2)", cex = cexax)
-      bias_store[[paste0(plot_type, "_mean")]] <- bias_mean <- mean(comp_2$m - comp_1$m)
-      bias_store[[paste0(plot_type, "_se")]] <- bias_se <- sd(comp_2$m - comp_1$m) / sqrt(nrow(comp_1))
       # mtext(side = 3, line = 0.25, text = paste0("Bias = ", formatC(x = bias_mean, format = "f", digits = 2),
       #                                            "% (SE = ", formatC(x = bias_se, format = "f", digits = 2), "%)"), cex = cexax)
       abline(0, 1)
@@ -455,8 +441,8 @@ for (nu in c(nu_fixed_pt_estimate, nu_approx)) {
       points(comp_1$m, comp_2$m, pch = 19, cex = .7)
       mtext(side = 3, line = 1, at = 0, text = switch (plot_type, full = "(c)", cut = "(d)"), cex = 1)
     }
-    dev.off()
   }
+  
 }  
   
 
@@ -484,22 +470,22 @@ bias_se_full <- bias_store$full_se
 bias_mean_cut <- bias_store$cut_mean
 bias_se_cut <- bias_store$cut_se
 
-dir_text_numbers <- "C:/Users/nicho/Dropbox/Apps/Overleaf/Interoperability of models/text_numbers/cut_vs_full_comp"
+# dir_text_numbers_case_study1 <- "C:/Users/nicho/Dropbox/Apps/Overleaf/Interoperability of models/text_numbers/cut_vs_full_comp"
 save_num <- c("delta_mean_cut", "delta_sd_cut", "delta_lower_cut", "delta_upper_cut", "delta_mean_full", "delta_sd_full", 
               "delta_lower_full", "delta_upper_full", "pi_mean_cut", "pi_lower_cut", "pi_upper_cut", "pi_mean_full", "pi_lower_full", "pi_upper_full")
 for(numc in save_num)
-  write.table(formatC(eval(as.name(numc)), format = "f", digits = 1), file = paste(dir_text_numbers, "/", numc, ".txt", sep = ""), 
+  write.table(formatC(eval(as.name(numc)), format = "f", digits = 1), file = paste(dir_text_numbers_case_study1, "/", numc, ".txt", sep = ""), 
               col.names = F, row.names = F, quote = F)
 
 save_num <- c("nu_fixed_pt_estimate", "nu_approx")
 for(numc in save_num)
-  write.table(formatC(eval(as.name(numc)), format = "f", digits = 3), file = paste(dir_text_numbers, "/", numc, ".txt", sep = ""),
+  write.table(formatC(eval(as.name(numc)), format = "f", digits = 3), file = paste(dir_text_numbers_case_study1, "/", numc, ".txt", sep = ""),
               col.names = F, row.names = F, quote = F)
 
 
 save_num <- c("bias_mean_full", "bias_se_full", "bias_mean_cut", "bias_se_cut")
 for(numc in save_num)
-  write.table(formatC(eval(as.name(numc)), format = "f", digits = 2), file = paste(dir_text_numbers, "/", numc, ".txt", sep = ""), 
+  write.table(formatC(eval(as.name(numc)), format = "f", digits = 2), file = paste(dir_text_numbers_case_study1, "/", numc, ".txt", sep = ""), 
               col.names = F, row.names = F, quote = F)
 
 
@@ -507,7 +493,6 @@ for(numc in save_num)
 # Plot it!
 grey_pallette <- grey(seq(0, 1, length.out = 1000))
 graphics.off()
-# plot_dir <- "C:/Users/nicho/Dropbox/Apps/Overleaf/Interoperability of models/figures"
 plot_file <- paste0(plot_dir, "/cut_vs_full_3-way_with_improved_nu_estimate.jpeg")
 jpeg(plot_file, 12, 8, res = 750, units = "in")
 par(mar = c(3, 3, 5, 5), oma = c(1, 1, 3, 1), mfrow = c(2, 3))
@@ -624,12 +609,4 @@ for (plot_type in c("full_misspecified", "cut", "full_improved")) {
 dev.off()
 
 
-x <- "paste('Misspecified model,' nu = hat(nu))"
-
-a <- expression(paste("Misspecified model,", nu = hat(nu)))
-str(a)
-
-plot(0, main = call(a))
-
-plot(0, main = expression(paste("Misspecified model,", nu == hat(nu)[MLE])))
 

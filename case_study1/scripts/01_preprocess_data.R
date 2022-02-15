@@ -5,10 +5,10 @@ library(dplyr)
 library(tidyr)
 library(zoo)
 
-# analysis_type <- c("missing_cases", "paper_results")[1]
+mkdir("data", showWarnings = FALSE)
 
 ### Import weekly LTLA-level Pillar 1+2 testing data ###
-path_to_pillar12 <- "data/Demographic_LA_tables.ods"
+path_to_pillar12 <- "../ukhsa-turing-rss-interoperability-data/testing/Demographic_LA_tables.ods"
 
 pillar12_Nt <- read_ods(path_to_pillar12, sheet = "Table_6", skip = 2) %>%
   pivot_longer(-(1:6), names_to = "week", values_to = "Nt")
@@ -37,14 +37,14 @@ ltla_code <- pillar12_df %>%
 
 
 ### Import ONS population estimates ###
-path_to_ons_pop <- "data/ukmidyearestimates20192020ladcodes.xls"
+path_to_ons_pop <- "../ukhsa-turing-rss-interoperability-data/covariates/ukmidyearestimates20192020ladcodes.xls"
 pop_size <- readxl::read_excel(path_to_ons_pop, sheet = "MYE2 - Persons", skip = 3) %>%
   select(1:4) %>%
   filter(Code %in% c(pillar12_df$LTLA, pillar12_df$Region))
 
 
 
-northamptonshire_pop <- readr::read_csv("data/northamptonshire_pop_nomis.csv", skip = 5) %>%
+northamptonshire_pop <- readr::read_csv("../ukhsa-turing-rss-interoperability-data/covariates/northamptonshire_pop_nomis.csv", skip = 5) %>%
   rename(ltla = 1, M = 2)
 
 ltla_pop <- pop_size %>%
@@ -58,11 +58,10 @@ phe_region_pop <- pop_size %>%
   select(phe_region, M = `All ages`)
 
 
-# if (analysis_type == "paper_results") {
   ### Import REACT PHE region totals and positives ###
   # Weekly data
-  path_to_react_totals <- "data/react_total.csv"
-  path_to_react_positives <- "data/react_positive.csv"
+  path_to_react_totals <- "../ukhsa-turing-rss-interoperability-data/react/react_total.csv"
+  path_to_react_positives <- "../ukhsa-turing-rss-interoperability-data/react/react_positive.csv"
   
   react_Nr <- read_csv(path_to_react_totals)
   missing_field_name <- ifelse("X1" %in% names(react_Nr), "X1", "...1")
@@ -83,67 +82,11 @@ phe_region_pop <- pop_size %>%
     summarise(Nr = sum(Nr),
               nr = sum(nr), .groups = "drop")
   readr::write_csv(react_df, "data/react.csv")
-# }
 
-# if (analysis_type == "missing_cases") {
-#   # Age-stratified REACT data
-#   react_age_df <- data.frame()
-#   for(round in 1:13) {
-#     file_name_curr <- paste0("round_", round, "_go.csv")
-#     path_to_local_age_file <- file.path("data", file_name_curr)
-#     d <- read.csv(path_to_local_age_file)
-#     d$region_week <- paste0(d$region, "_", d$react_week_start_date)
-#     add <- data.frame(region_week = unique(d$region_week))
-#     add$Nr <- sapply(add$region_week, function(x) sum(d[d$region_week == x, "number_samples"]))
-#     add$nr <- sapply(add$region_week, function(x) sum(d[d$region_week == x, "number_positive"]))
-#     add$start_week_react <- d[match(add$region_week, d$region_week), "react_week_start_date"]
-#     add$mid_week_react <- as.Date(add$start_week_react) + 3
-#     add$region <- d[match(add$region_week, d$region_week), "region"]
-#     react_age_df <- rbind(react_age_df, add)
-#   }
-#   
-#   mid_week_map <- data.frame(mid_week_p12 = mid_week_unique, mid_week_react = NA)
-#   react_mid_week_unique <- sort(unique(as.character(react_age_df$mid_week_react)))
-#   for (j in 1:nrow(mid_week_map)) {
-#     mid_week_map$mid_week_react[j] <- react_mid_week_unique[which.min(abs(as.Date(mid_week_map$mid_week_p12[j]) - as.Date(react_mid_week_unique)))]
-#   }
-#   react_age_df$mid_week <- mid_week_map[match(as.character(react_age_df$mid_week_react), as.character(mid_week_map$mid_week_react)), "mid_week_p12"]
-#   react_age_df_out <- react_age_df[!is.na(react_age_df$mid_week), ]
-#   react_age_df_out <- react_age_df_out[, c("region", "mid_week", "Nr", "nr")]
-#   colnames(react_age_df_out) <- c("phe_region", "mid_week", "Nr", "nr")
-#   react_age_df_out <- react_age_df_out[order(react_age_df_out$phe_region, react_age_df_out$mid_week), ]
-#   readr::write_csv(react_age_df_out, "data/age_destratified_react.csv")
-#   
-#   sanity_check <- F
-#   if (sanity_check) {
-#     react_df <- react_df[order(react_df$phe_region, react_df$mid_week), ]
-#     react_df$region_week <- paste0(react_df$phe_region, "_", react_df$mid_week)
-#     react_age_df_out$region_week <- paste0(react_age_df_out$phe_region, "_", react_age_df_out$mid_week)
-#     react_df$pr <- react_df$nr / react_df$Nr
-#     react_age_df_out$pr <- react_age_df_out$nr / react_age_df_out$Nr
-#     reg_week_plot <- intersect(react_df$region_week, react_age_df_out$region_week)
-#     pdf("/mnt/c/Temp/cross_check_react_agestrat_vs_non.pdf")
-#     par(mfrow = c(2, 2))
-#     for(plc in c("nr", "Nr", "pr")) {
-#       plot(unlist(react_df[match(reg_week_plot, react_df$region_week), plc]), unlist(react_age_df_out[match(reg_week_plot, react_age_df_out$region_week), plc]),
-#            xlab = "Data from positive/total.csv", ylab = "Data from age_strat weekly", main = plc)
-#     }
-#     dev.off()
-#     comp_non <- react_df[match(reg_week_plot, react_df$region_week), ]
-#     comp_age <- react_age_df_out[match(reg_week_plot, react_age_df_out$region_week), ]
-#     inds_look <- which(comp_age$Nr < 5000 & comp_non$Nr > 5000)[1:20]
-#     comp_age[inds_look, ]
-#     comp_non[inds_look, ]
-#   }
-#   
-#   react_df <- as_tibble(react_age_df_out)
-#   react_df$mid_week <- as.Date(react_df$mid_week)
-#   readr::write_csv(react_df, "data/react.csv")
-# }
 
 # Round data
-path_to_react_7a <- "data/unwt_ordered_ltla_prev7a.csv"
-path_to_react_7b <- "data/unwt_ordered_ltla_prev7b.csv"
+path_to_react_7a <- "../ukhsa-turing-rss-interoperability-data/react/unwt_ordered_ltla_prev7a.csv"
+path_to_react_7b <- "../ukhsa-turing-rss-interoperability-data/react/unwt_ordered_ltla_prev7b.csv"
 react_7a <- read_csv(path_to_react_7a)
 react_7b <- read_csv(path_to_react_7b)
 react_7 <- bind_rows(react_7a, react_7b) %>%
@@ -154,7 +97,7 @@ react_7 <- bind_rows(react_7a, react_7b) %>%
 
 react_round_df <- react_7
 for (this_round in 8:13) {
-  path_to_react <- paste0("data/unwt_ordered_ltla_prev", this_round, ".csv")
+  path_to_react <- paste0("../ukhsa-turing-rss-interoperability-data/react/unwt_ordered_ltla_prev", this_round, ".csv")
   this_react <- read_csv(path_to_react) %>%
     select(ltla, positive, number_samples) %>%
     mutate(round = this_round)
@@ -214,8 +157,8 @@ region_pop <- phe_region_pop %>%
   left_join(phe_region_to_region_df, by = "phe_region") %>%
   group_by(region) %>%
   summarise(M = sum(M), .groups = "drop")
-path_to_vax <- "data/COVID-19-monthly-announced-vaccinations.xlsx"
-path_to_weekly_vax <- "data/COVID-19-weekly-announced-vaccinations.xlsx"
+path_to_vax <- "../ukhsa-turing-rss-interoperability-data/vaccinations/COVID-19-monthly-announced-vaccinations.xlsx"
+path_to_weekly_vax <- "../ukhsa-turing-rss-interoperability-data/vaccinations/COVID-19-weekly-announced-vaccinations.xlsx"
 
 # Vaccinations started on the 8th December, corresponding to the mid_week of 13th December.
 # We assume it takes 2 weeks (i.e. 14 days) for vaccinations to become effective. 
@@ -277,7 +220,7 @@ write_csv(vax_df, "data/vaccination.csv")
 # plot(1:sum(vax_df$ltla == "Adur"), unlist(vax_df[vax_df$ltla == "Adur", "V"]))
 
 ### Get variant data ###
-path_to_sanger <- "data/UK_variant_data_Sanger.tsv"
+path_to_sanger <- "../ukhsa-turing-rss-interoperability-data/covariates/UK_variant_data_Sanger.tsv"
 variants_in <- as.data.frame(read_tsv(path_to_sanger))
 variants_in$mid_week <- as.character(as.Date(variants_in$WeekEndDate) - 3)
 variants_in$ltla <- unlist(ltla_code[match(variants_in$LTLA, ltla_code$Code), "ltla"])
@@ -295,7 +238,7 @@ readr::write_csv(variants_out, "data/variants.csv")
 
 ### Get epimap Rt data ###
 
-path_to_combined_epimap <- "data/Rt_estimates_Epimap_combined.csv"
+path_to_combined_epimap <- "../ukhsa-turing-rss-interoperability-data/epimap/Rt_estimates_Epimap_combined.csv"
 r_in <- read.csv(file = path_to_combined_epimap, stringsAsFactors = F)  
 r_in$name_date <- paste0(r_in$area, "_", r_in$Date)
 mid_week_unique <- sort(unique(as.character(week_df$mid_week)))
@@ -306,23 +249,5 @@ r_out[, c("CIlow", "Rt", "CIup")] <- r_in[match(paste0(r_out$area, "_", r_out$da
 r_out$coverage <- .95
 path_to_preproc_Epimap_Rt <- "data/Rt_estimates_Epimap_combined_preprocessed.csv"
 write.csv(r_out, file = path_to_preproc_Epimap_Rt, row.names = F)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
