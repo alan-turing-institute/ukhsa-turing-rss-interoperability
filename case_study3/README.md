@@ -113,17 +113,21 @@ julia --project=Epimap.jl Epimap.jl/scripts/generate_outputs_debiased.jl Epimap.
 
 In the analysis, comparisons are made to an SIR model fitted to the debiased prevalence estimates from `case_study1`. This data can be found in the `data/` folder in this directory.
 
-### TODO Figure 8: geographic visualization
+### Figure 8: geographic visualization
 
 ``` shell
-julia --project=Epimap.jl Epimap.jl/scripts/mapviz.jl \
+julia --project=Epimap.jl scripts/mapviz.jl \
+      --verbose \
+      -drop-missing \
+      --out=figures/figure-8.png \
       --date=2020-12-04 \
-      epimap=Epimap.jl/intermediate/DIRECTORY-FOR-RMAP-RUN/out/Rt.csv \
-      epimap_debiased=Epimap.jl/intermediate/DIRECTORY-FOR-RMAP_DEBIASED-RUN/out/Rt.csv \
-      debiased=data/Rt-debiased.csv
+      --figure-size="(1500, 500)" \
+      "Epimap=path/to/run-for-epimap-without-debiased/out/Rt.csv" \
+      "Epimap debiased=path/to/run-for-epimap-with-debiased/out/Rt.csv" \
+      "Debiased=path/to/output-for-case-study-1/IR_for_interop.csv"
 ```
 
-TODO: Need to convert `data/Rt-debiased.csv` to have columns `Rt_2_5`, `Rt_50` and `Rt_97_5`.
+![Figure 8](./figures/figure-8.png)
 
 ### Figure 9: Rt comparison between selected LTLAs
 
@@ -140,8 +144,13 @@ Then we can run the script in `case_study1/06c_epimap_comparison_plots.R** on th
 ### Figure 10: Internal vs. External "infection pressure"
 
 ``` shell
-julia --project=Epimap.jl Epimap.jl/intermediate/DIRECTORY-FOR-RUN/out/Z_outside_portion.csv \
-      --bounds=(0.0,1.0) \
+julia --project=Epimap.jl Epimap.jl/scripts/mapviz.jl \
+      Epimap.jl/intermediate/DIRECTORY-FOR-RUN/out/Z_outside_portion.csv \
+      --bounds="(0.0,1.0)" \
       --date=2020-12-04 \
-      --column=Z_50
+      --column=Z_50 \
+      --out=figures/figure-10.png \
+      --drop-missing
 ```
+
+![Figure 10](./figures/figure-10.png)
