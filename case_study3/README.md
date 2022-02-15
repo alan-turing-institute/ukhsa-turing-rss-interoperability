@@ -140,8 +140,11 @@ Then we can run the script in `case_study1/06c_epimap_comparison_plots.R** on th
 ### Figure 10: Internal vs. External "infection pressure"
 
 ``` shell
-julia --project=Epimap.jl Epimap.jl/intermediate/DIRECTORY-FOR-RUN/out/Z_outside_portion.csv \
-      --bounds=(0.0,1.0) \
+julia --project=Epimap.jl Epimap.jl/scripts/mapviz.jl \
+      Epimap.jl/intermediate/DIRECTORY-FOR-RUN/out/Z_outside_portion.csv \
+      --bounds="(0.0,1.0)" \
       --date=2020-12-04 \
-      --column=Z_50
+      --column=Z_50 \
+      --out=figures/Z_outside_portion.png \
+      --drop-missing
 ```
