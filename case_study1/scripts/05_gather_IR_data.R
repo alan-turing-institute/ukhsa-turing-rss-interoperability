@@ -95,3 +95,8 @@ rownames(I_all) <- I_all$ltla
 
 str(IR)
 readr::write_csv(IR, file.path(out_dir, "IR_for_interop.csv"))
+
+
+source("scripts/06a_cut_vs_full.R")
+source("scripts/06b_SIR_plot.R")
+source("scripts/06c_epimap_comparison_plots.R")

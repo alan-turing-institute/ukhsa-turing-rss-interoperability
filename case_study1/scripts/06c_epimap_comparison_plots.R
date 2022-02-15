@@ -5,14 +5,11 @@ source("scripts/SIR_utils.R")
 # Run 00_download_data.R and 01_preprocess_data.R first
 ltla_df <- readr::read_csv("data/ltla.csv")
 
-# This file needs to be in Zenodo and/ or created from case studies 1 and 3 outputs
-IR_comb_orig <- read.csv("https://www.dropbox.com/s/j0gtd2nue8sqfy1/Rt-combined-v2.csv?dl=1", stringsAsFactors = F)
-
 IR_weekly <- read.csv("../case_study3/outputs/Rt-combined.csv", stringsAsFactors = F)
 all_days <- seq(min(as.Date(IR_weekly$mid_week)) - 3, max(as.Date(IR_weekly$mid_week)) + 3, by = 1)
-IR_comb <- expand.grid(ltla = unique(IR_comb$ltla), Date = all_days)
+IR_comb <- expand.grid(ltla = unique(IR_weekly$ltla), Date = all_days)
 temp_out <- outer(IR_comb$Date, as.Date(mid_week_unique), '-')
-IR_comb$mid_week <- mid_week_unique[apply(temp_out, 1, function(x) which.min(abs(x)))]
+IR_comb$mid_week <- as.character(mid_week_unique[apply(temp_out, 1, function(x) which.min(abs(x)))])
 IR_comb <- IR_comb %>%
   left_join(IR_weekly, by = c("ltla", "mid_week"))
 IR_comb$Date <- as.character(IR_comb$Date)
@@ -22,17 +19,11 @@ IR_comb$Date <- as.character(IR_comb$Date)
 IR_comb$ltla_mid_week <- paste0(IR_comb$ltla, "_", IR_comb$mid_week)
 mid_week_unique <- sort(unique(IR_comb$mid_week))
 ltla_mid_week_unique <- sort(unique(IR_comb$ltla_mid_week)) 
-epimap_min_date <- as.character(min(IR_comb$Date))#mid_week)
-epimap_max_date <- as.character(max(IR_comb$Date))#mid_week)
-# epimap_min_date <- as.character(min(IR_comb$mid_week))#mid_week)
-# epimap_max_date <- as.character(max(IR_comb$mid_week))#mid_week)
-# str(IR_comb)
-# min(IR_comb$mid_week)
-# head(IR_comb)
+epimap_min_date <- as.character(min(IR_comb$Date))
+epimap_max_date <- as.character(max(IR_comb$Date))
 
 mid_week_unique <- unique(as.character(ltla_df$mid_week))
 week_ind <- which(mid_week_unique >= epimap_min_date)
-ltla_plot <- sample(ltla_df$ltla, 9)#sort(choose_focus_ltlas(ltla_df))
 
 IR_comb_week <- IR_comb[IR_comb$Date %in% mid_week_unique, ] 
 type_curr <- c("epimap_diff_from_others", "debias_diff_from_others", "ED_diff_from_others")[1]
@@ -45,7 +36,6 @@ if (type_curr == c("debias_diff_from_others")) {
 if (type_curr == c("ED_diff_from_others")) {
   ltla_plot <- unique(IR_comb_week[order(abs(IR_comb_week$epimap_debiased_R_m - (IR_comb_week$debiased_R_m + IR_comb_week$epimap_R_m) / 2), decreasing = T), "ltla"])[1:3]
 }
-# ltla_plot <- sample(ltla_df$ltla, 9)#sort(choose_focus_ltlas(ltla_df))
 
 ltla_unique <- unique(IR_comb$ltla)
 set.seed(42)
@@ -164,7 +154,6 @@ craven_R_D <- map_look[map_look$ltla == "Craven", "debiased_R_m"]
 
 liverpool <- ltla_df[ltla_df$ltla == "Liverpool", ]
 liverpool$test_pos <- liverpool$nt / liverpool$Nt 
-# dir_text_numbers <- "C:/Users/nicho/Dropbox/Apps/Overleaf/Interoperability of models/text_numbers/cut_vs_full_comp"
 tes_pos_liv_week_1 <- liverpool$test_pos[liverpool$mid_week == "2020-11-01"] * 100
 tes_pos_liv_week_2 <- liverpool$test_pos[liverpool$mid_week == "2020-11-08"] * 100
 
