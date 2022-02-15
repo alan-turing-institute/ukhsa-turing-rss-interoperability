@@ -273,10 +273,10 @@ for (nu in c(nu_fixed_pt_estimate, nu_approx)) {
       group_by(ltla) %>%
       group_split()
     ltla_names <- sapply(ltla_list, function(x) x$ltla[1])
-    ltla_prevalence <- parLapply(clust, ltla_list, local_prevalence,
+    ltla_prevalence_subset <- parLapply(clust, ltla_list, local_prevalence,
                                  control, imperfect, type)
-    names(ltla_prevalence) <- ltla_names
-    postmat <- sapply(ltla_prevalence, function(x) x$norm_post)
+    names(ltla_prevalence_subset) <- ltla_names
+    postmat <- sapply(ltla_prevalence_subset, function(x) x$norm_post)
     postmat_cum <- apply(postmat, 2, cumsum)
     ci_lower <- control$I_seq[apply(postmat_cum, 2, function(x) findInterval(.025, x))]
     ci_upper <- control$I_seq[apply(postmat_cum, 2, function(x) findInterval(.975, x))]
@@ -292,7 +292,7 @@ for (nu in c(nu_fixed_pt_estimate, nu_approx)) {
     ltla_df_use[, paste0(plot_type, "_prevprop_post_sd")] <- ltla_df_use[, paste0(plot_type, "_prevnum_post_sd")] / ltla_df_use$M
     ltla_df_use[, paste0(plot_type, "_prevprop_post_lower")] <- ltla_df_use[, paste0(plot_type, "_prevnum_post_lower")] / ltla_df_use$M
     ltla_df_use[, paste0(plot_type, "_prevprop_post_upper")] <- ltla_df_use[, paste0(plot_type, "_prevnum_post_upper")] / ltla_df_use$M
-    ltla_prev_list[[plot_type]] <- ltla_prevalence
+    ltla_prev_list[[plot_type]] <- ltla_prevalence_subset
   }
   
   

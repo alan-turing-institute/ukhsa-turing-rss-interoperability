@@ -17,6 +17,8 @@ for (ltla_curr in ltla_unique) {
   # names(I_quants_curr) <- paste0(c("l", "m", "u"), "_Ix")
 }
 
+str(ltla_prevalence[[ltla_curr]])
+
 phe_region_unique
 # ltlas_focus <- unlist(unique(ltla_df[ltla_df$phe_region == "London", "ltla"]))
 ltlas_focus <- unlist(unique(ltla_df[match(phe_region_unique[c(1, 2, 5)], ltla_df$phe_region), "ltla"]))

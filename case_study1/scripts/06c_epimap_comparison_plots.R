@@ -10,9 +10,9 @@ IR_comb_orig <- read.csv("https://www.dropbox.com/s/j0gtd2nue8sqfy1/Rt-combined-
 
 IR_weekly <- read.csv("../case_study3/outputs/Rt-combined.csv", stringsAsFactors = F)
 all_days <- seq(min(as.Date(IR_weekly$mid_week)) - 3, max(as.Date(IR_weekly$mid_week)) + 3, by = 1)
-IR_comb <- expand.grid(ltla = unique(IR_comb$ltla), Date = all_days)
+IR_comb <- expand.grid(ltla = unique(IR_weekly$ltla), Date = all_days)
 temp_out <- outer(IR_comb$Date, as.Date(mid_week_unique), '-')
-IR_comb$mid_week <- mid_week_unique[apply(temp_out, 1, function(x) which.min(abs(x)))]
+IR_comb$mid_week <- as.character(mid_week_unique[apply(temp_out, 1, function(x) which.min(abs(x)))])
 IR_comb <- IR_comb %>%
   left_join(IR_weekly, by = c("ltla", "mid_week"))
 IR_comb$Date <- as.character(IR_comb$Date)
