@@ -113,20 +113,19 @@ julia --project=Epimap.jl Epimap.jl/scripts/generate_outputs_debiased.jl Epimap.
 
 In the analysis, comparisons are made to an SIR model fitted to the debiased prevalence estimates from `case_study1`. This data can be found in the `data/` folder in this directory.
 
-### TODO Figure 8: geographic visualization
+### Figure 8: geographic visualization
 
 ``` shell
 julia --project=Epimap.jl scripts/mapviz.jl \
       --verbose \
       -drop-missing \
-      --out=map-comparison.png \
+      --out=figures/figure-8.png \
       --date=2020-12-04 \
-      path/to/run-for-epimap-without-debiased/out/Rt.csv \
-      path/to/run-for-epimap-with-debiased/out/Rt.csv \
-      path/to/output-for-case-study-1/IR_for_interop.csv
+      --figure-size="(1500, 500)" \
+      "Epimap=path/to/run-for-epimap-without-debiased/out/Rt.csv" \
+      "Epimap debiased=path/to/run-for-epimap-with-debiased/out/Rt.csv" \
+      "Debiased=path/to/output-for-case-study-1/IR_for_interop.csv"
 ```
-
-TODO: Need to convert `data/Rt-debiased.csv` to have columns `Rt_2_5`, `Rt_50` and `Rt_97_5`.
 
 ### Figure 9: Rt comparison between selected LTLAs
 
@@ -148,6 +147,6 @@ julia --project=Epimap.jl Epimap.jl/scripts/mapviz.jl \
       --bounds="(0.0,1.0)" \
       --date=2020-12-04 \
       --column=Z_50 \
-      --out=Z_outside_portion.png \
+      --out=figures/figure-10.png \
       --drop-missing
 ```
