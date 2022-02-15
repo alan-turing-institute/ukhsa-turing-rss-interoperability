@@ -127,6 +127,8 @@ julia --project=Epimap.jl scripts/mapviz.jl \
       "Debiased=path/to/output-for-case-study-1/IR_for_interop.csv"
 ```
 
+![Figure 8](./figures/figure-8.png)
+
 ### Figure 9: Rt comparison between selected LTLAs
 
 First we create a unified dataframe from the Rt quantities inferred for the different models:
@@ -150,3 +152,5 @@ julia --project=Epimap.jl Epimap.jl/scripts/mapviz.jl \
       --out=figures/figure-10.png \
       --drop-missing
 ```
+
+![Figure 10](./figures/figure-10.png)
