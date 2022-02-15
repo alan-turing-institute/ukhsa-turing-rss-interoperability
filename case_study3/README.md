@@ -116,11 +116,14 @@ In the analysis, comparisons are made to an SIR model fitted to the debiased pre
 ### TODO Figure 8: geographic visualization
 
 ``` shell
-julia --project=Epimap.jl Epimap.jl/scripts/mapviz.jl \
+julia --project=Epimap.jl scripts/mapviz.jl \
+      --verbose \
+      -drop-missing \
+      --out=map-comparison.png \
       --date=2020-12-04 \
-      epimap=Epimap.jl/intermediate/DIRECTORY-FOR-RMAP-RUN/out/Rt.csv \
-      epimap_debiased=Epimap.jl/intermediate/DIRECTORY-FOR-RMAP_DEBIASED-RUN/out/Rt.csv \
-      debiased=data/Rt-debiased.csv
+      path/to/run-for-epimap-without-debiased/out/Rt.csv \
+      path/to/run-for-epimap-with-debiased/out/Rt.csv \
+      path/to/output-for-case-study-1/IR_for_interop.csv
 ```
 
 TODO: Need to convert `data/Rt-debiased.csv` to have columns `Rt_2_5`, `Rt_50` and `Rt_97_5`.
@@ -145,6 +148,6 @@ julia --project=Epimap.jl Epimap.jl/scripts/mapviz.jl \
       --bounds="(0.0,1.0)" \
       --date=2020-12-04 \
       --column=Z_50 \
-      --out=figures/Z_outside_portion.png \
+      --out=Z_outside_portion.png \
       --drop-missing
 ```
