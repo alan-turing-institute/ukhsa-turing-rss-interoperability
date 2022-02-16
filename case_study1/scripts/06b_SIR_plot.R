@@ -28,7 +28,6 @@ xpl <- plot_map$day_index
 ltla_curve <- ltlas_focus
 col_reg <- rainbow(length(ltla_curve), alpha = .3)
 names(col_reg) <- ltla_curve
-# jpeg(paste0(plot_dir, "/SIR_interoperability.jpeg"), 9, 6, res = 750, units = "in")
 pdf(paste0(plot_dir, "/SIR_interoperability.pdf"), 9, 6)
 par(mfcol = c(2, length(ltla_curve)), mar = c(0.5, 0.5, 0.5, 0.5), oma = c(6, 5, 6, 5))
 black_transparent <- grey(0, alpha = .75)
@@ -72,34 +71,3 @@ for (ltla_curr in ltla_curve) {
   }
 }
 dev.off()
-
-# function(d = plot_map, add_axis = T, shade_alpha = .2, for_presentation = F, ...){
-#   #d$month <- sapply(strsplit(d$date, "-"), function(v) paste(v[1:2], collapse = "-"))
-#   d$month <- months(d$date)
-#   d$month <- format(d$date, "%Y-%m")
-#   month_unique <- unique(d$month)
-#   days_per_month <- table(d$month)
-#   month_unique <- month_unique[days_per_month[month_unique] >= 28]
-#   month_name <- format(strptime(paste0(month_unique, "-01"), format = "%Y-%m-%d"), "%b")
-#   names(month_name) <- month_unique
-#   greys_shade <- grey(c(0.75, 1), alpha = shade_alpha)
-#   month_shade_col <- greys_shade[1:length(month_unique) %% 2 + 1]
-#   names(month_shade_col) <- month_unique
-#   month_mean_index <- sapply(month_unique, function(m) mean(which(d$month == m)))
-#   month_lower_divider <- sapply(month_unique, function(m) min(which(d$month == m)) - .5)
-#   month_upper_divider <- sapply(month_unique, function(m) max(which(d$month == m)) + .5)
-#   for(month_shade in month_unique){
-#     x_coords <- c(rep(month_lower_divider[month_shade], 2), rep(month_upper_divider[month_shade], 2), month_lower_divider[month_shade])
-#     big_num <- 1e10
-#     y_coords <- big_num * c(-1, 1, 1, -1, -1)
-#     polygon(x = x_coords, y = y_coords, col = month_shade_col[month_shade], border = NA)
-#   }
-#   if (add_axis) {
-#     labs <- month_name[month_unique]
-#     ats <- month_mean_index
-#     #   if(for_presentation) {
-#     #      labs[labs == "May"] <- ""
-#     #    }
-#     axis(side = 1, at = ats, labels = labs, las = 2, tcl = 0, ...)
-#   }
-# }

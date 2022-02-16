@@ -417,47 +417,6 @@ for (nu in c(nu_fixed_pt_estimate, nu_approx)) {
 
 
 
-# 
-# # Output means and 95% CIs for marg delta
-# delta_mean_cut <- sum(delta_cut_marg_post_norm * del_seq)
-# delta_sd_cut <- delta_df_cut_for_inference$delta_prior_sd
-# delta_lower_cut <- del_seq[findInterval(0.025, cumsum(delta_cut_marg_post_norm)) - 1]
-# delta_upper_cut <- del_seq[findInterval(0.975, cumsum(delta_cut_marg_post_norm)) - 1]
-# delta_mean_full <- sum(delta_full_marg_post_norm * del_seq)
-# delta_sd_full <- delta_df_full_for_inference$delta_prior_sd
-# delta_lower_full <- del_seq[findInterval(0.025, cumsum(delta_full_marg_post_norm)) - 1]
-# delta_upper_full <- del_seq[findInterval(0.975, cumsum(delta_full_marg_post_norm)) - 1]
-# 
-# pi_mean_cut <- sum(pi_cut_marg_post_norm * pi_seq_coarse) * 100
-# pi_lower_cut <- pi_seq_coarse[findInterval(0.025, cumsum(pi_cut_marg_post_norm)) - 1] * 100
-# pi_upper_cut <- pi_seq_coarse[findInterval(0.975, cumsum(pi_cut_marg_post_norm)) - 1] * 100
-# pi_mean_full <- sum(pi_full_marg_post_norm * pi_seq_coarse) * 100
-# pi_lower_full <- pi_seq_coarse[findInterval(0.025, cumsum(pi_full_marg_post_norm)) - 1] * 100
-# pi_upper_full <- pi_seq_coarse[findInterval(0.975, cumsum(pi_full_marg_post_norm)) - 1] * 100
-# 
-# bias_mean_full <- bias_store$full_mean
-# bias_se_full <- bias_store$full_se
-# bias_mean_cut <- bias_store$cut_mean
-# bias_se_cut <- bias_store$cut_se
-# 
-# save_num <- c("delta_mean_cut", "delta_sd_cut", "delta_lower_cut", "delta_upper_cut", "delta_mean_full", "delta_sd_full", 
-#               "delta_lower_full", "delta_upper_full", "pi_mean_cut", "pi_lower_cut", "pi_upper_cut", "pi_mean_full", "pi_lower_full", "pi_upper_full")
-# for(numc in save_num)
-#   write.table(formatC(eval(as.name(numc)), format = "f", digits = 1), file = paste(dir_text_numbers_case_study1, "/", numc, ".txt", sep = ""), 
-#               col.names = F, row.names = F, quote = F)
-# 
-# save_num <- c("nu_fixed_pt_estimate", "nu_approx")
-# for(numc in save_num)
-#   write.table(formatC(eval(as.name(numc)), format = "f", digits = 3), file = paste(dir_text_numbers_case_study1, "/", numc, ".txt", sep = ""),
-#               col.names = F, row.names = F, quote = F)
-# 
-# 
-# save_num <- c("bias_mean_full", "bias_se_full", "bias_mean_cut", "bias_se_cut")
-# for(numc in save_num)
-#   write.table(formatC(eval(as.name(numc)), format = "f", digits = 2), file = paste(dir_text_numbers_case_study1, "/", numc, ".txt", sep = ""), 
-#               col.names = F, row.names = F, quote = F)
-# 
-# Output means and 95% CIs for marg delta
 delta_mean_cut <- sum(delta_cut_marg_post_norm * del_seq)
 delta_sd_cut <- delta_df_cut_for_inference$delta_prior_sd
 delta_lower_cut <- del_seq[findInterval(0.025, cumsum(delta_cut_marg_post_norm)) - 1]
@@ -498,7 +457,6 @@ bias_se_full_misspecified <- bias_store$full_misspecified_se
 bias_mean_cut <- bias_store$cut_mean
 bias_se_cut <- bias_store$cut_se
 
-# dir_text_numbers <- "C:/Users/nicho/Dropbox/Apps/Overleaf/Interoperability of models/text_numbers/cut_vs_full_comp"
 save_num <- c("delta_mean_cut", "delta_sd_cut", "delta_lower_cut", "delta_upper_cut", 
               "delta_mean_full_improved", "delta_sd_full_improved", "delta_lower_full_improved", "delta_upper_full_improved", 
               "delta_mean_full_misspecified", "delta_sd_full_misspecified", "delta_lower_full_misspecified", "delta_upper_full_misspecified", 
