@@ -20,16 +20,17 @@ irc <- IR[IR$ltla == ltla_curr, ]
 panel_count <- 1
 max_prev_I <- max(IR$I_u[IR$ltla %in% ltlas_focus])
 
-plot_map <- data.frame(date = seq(min(as.Date(ltla_df$mid_week)) - 3, 
+plot_map <- data.frame(date = (seq(min(as.Date(ltla_df$mid_week)) - 3, 
                                   max(as.Date(ltla_df$mid_week)) + 3, 
-                                  by = 1))
+                                  by = 1)))
 plot_map$day_index <- 1:nrow(plot_map)
 xpl <- plot_map$day_index
 ltla_curve <- ltlas_focus
-col_reg <- rainbow(length(ltla_curve), alpha = .75)
+col_reg <- rainbow(length(ltla_curve), alpha = .3)
 names(col_reg) <- ltla_curve
-jpeg(paste0(plot_dir, "/SIR_interoperability.jpeg"), 9, 6, res = 750, units = "in")
+pdf(paste0(plot_dir, "/SIR_interoperability.pdf"), 9, 6)
 par(mfcol = c(2, length(ltla_curve)), mar = c(0.5, 0.5, 0.5, 0.5), oma = c(6, 5, 6, 5))
+black_transparent <- grey(0, alpha = .75)
 for (ltla_curr in ltla_curve) {
   for (what_pl in c("I", "R")[1:2]) {
     ylim_use <- switch(what_pl, I = c(0, max_prev_I), R = c(0, 2.5))
@@ -53,21 +54,20 @@ for (ltla_curr in ltla_curve) {
       matc <- IR[IR$ltla == ltla_curr, c("R_l", "R_m", "R_u")]
     }
     
-    xpl_week <- plot_map[match(mid_week_unique, plot_map$date), "day_index"]
+    xpl_week <- plot_map[match(as.Date(mid_week_unique), plot_map$date), "day_index"]
     colc <- rgb(0, 0, 1, alpha = .5)
     if(what_pl == "I") {
-      points(xpl_week, matc_x[, 2], pch = 19, col = 1)
+      points(xpl_week, matc_x[, 2], pch = 19, col = black_transparent)
       for (i in 1:length(xpl_week)) {
-        lines(rep(xpl_week[i], 2), matc_x[i, c(1, 3)], lty = 1, col = 1)
+        lines(rep(xpl_week[i], 2), matc_x[i, c(1, 3)], lty = 1, col = black_transparent)
       }
     }
     lines(xpl_week, matc[, 2], lty = 1, lwd = 2, col = colc)
     lines(xpl_week, matc[, 3], lty = 1, lwd = 1, col = colc)
     lines(xpl_week, matc[, 1], lty = 1, lwd = 1, col = colc)
-    annotate_months(plot_map, add_axis = (what_pl == "R"), shade_alpha = .2, for_presentation = T)
+    annotate_months(plot_map, add_axis = (what_pl == "R"), shade_alpha = .2, for_presentation = T, add_year = TRUE)
     if(what_pl == "I")
       mtext(side = 3, text = ltla_curr, cex = 1, line = 1)
   }
 }
 dev.off()
-

@@ -36,14 +36,12 @@ ltla_prevalence <- readRDS(file.path(out_dir, "ltla_prevalence.RDS"))
 ltla_pop <- ltla_df %>%
   distinct(ltla, M)
 
-LTLA_shp_Reg <- get_ltla_shape_file()
-
 control <- prevdebiasr::get_control_parameters()
 
-# Quantiles to plot
 quant_plot <- c(0.025, 0.5, 0.975)
 react_rounds <- sort(unique(react_ltla_df$round))
 
+###########################
 # Load SIR output
 ltla_unique <- unique(ltla_df$ltla)
 mid_week_unique <- unique(ltla_df$mid_week)
