@@ -35,7 +35,8 @@ annotate_months <- function(d, add_axis = T, shade_alpha = .2, for_presentation 
   d$month <- format(d$date, "%Y-%m")
   month_unique <- unique(d$month)  
   days_per_month <- table(d$month)
-  month_unique <- month_unique[days_per_month[month_unique] >= 28]
+  month_unique_lab <- month_unique[days_per_month[month_unique] >= 28]
+  
   month_name <- format(strptime(paste0(month_unique, "-01"), format = "%Y-%m-%d"), "%b")
   names(month_name) <- month_unique
   greys_shade <- grey(c(0.75, 1), alpha = shade_alpha)
@@ -51,11 +52,11 @@ annotate_months <- function(d, add_axis = T, shade_alpha = .2, for_presentation 
     polygon(x = x_coords, y = y_coords, col = month_shade_col[month_shade], border = NA)  
   }
   if (add_axis) {
-    labs <- month_name[month_unique]
+    labs <- month_name[month_unique_lab]
     if (add_year) {
-      labs <- paste0(month_name[month_unique], " '", substr(month_unique, 3, 4))
+      labs <- paste0(month_name[month_unique_lab], " '", substr(month_unique_lab, 3, 4))
     }
-    ats <- month_mean_index
+    ats <- month_mean_index[month_unique_lab]
  #   if(for_presentation) {
 #      labs[labs == "May"] <- ""
 #    }
