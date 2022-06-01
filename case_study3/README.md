@@ -10,10 +10,10 @@ See the official Julia documentation for instructions of how to install: https:/
 
 ### Installing dependencies
 
-First we clone the [`Epimap.jl`](https://github.com/epimap/Epimap.jl) repo using your favorite method. Using the shell:
+First we clone the [`Epimap.jl`](https://github.com/epimap/Epimap-public.jl) repo using your favorite method. Using the shell:
 
 ``` shell
-git clone https://github.com/epimap/Epimap.jl
+git clone https://github.com/epimap/Epimap-public.jl Epimap.jl
 ```
 
 In particular we want the `#paper` branch, which for example can be achieve by executing the following command:
